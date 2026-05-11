@@ -103,30 +103,21 @@
 </div>
 
 <script>
-  const input = document.getElementById("input");
-  const chat = document.getElementById("chat");
-
-  input.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-      sendMessage();
-    }
-  });
-
   function sendMessage() {
+    let input = document.getElementById("input");
     let text = input.value.trim();
-    if (!text) return;
+    if (text === "") return;
 
     addMessage(text, "user");
     input.value = "";
 
-    let response = getBotResponse(text);
-
     setTimeout(() => {
-      addMessage(response, "bot");
-    }, 400);
+      addMessage(getResponse(text), "bot");
+    }, 500);
   }
 
   function addMessage(text, sender) {
+    let chat = document.getElementById("chat");
     let msg = document.createElement("div");
     msg.classList.add("message", sender);
     msg.innerText = text;
@@ -134,37 +125,22 @@
     chat.scrollTop = chat.scrollHeight;
   }
 
-  function getBotResponse(text) {
+  function getResponse(text) {
     text = text.toLowerCase();
 
-    // REGLAS MÉDICAS (LÓGICA DEL BOT)
-
-    if (text.includes("fiebre")) {
-      return "La fiebre puede indicar infección. Recomendación: reposo, hidratación y consultar si supera 38.5°C.";
-    }
-
-    if (text.includes("dolor cabeza") || text.includes("migraña")) {
-      return "El dolor de cabeza puede deberse a estrés, deshidratación o migraña. Descansa y evita pantallas.";
-    }
-
-    if (text.includes("tos")) {
-      return "La tos puede ser viral o irritativa. Si dura más de 7 días, consulta a un profesional.";
-    }
-
     if (text.includes("cita")) {
-      return "Puedes pedir cita en tu centro de salud o sistema sanitario correspondiente.";
+      return "Para pedir una cita, accede al sistema de Osakidetza o acude a tu centro de salud.";
     }
 
-    if (text.includes("covid")) {
-      return "Síntomas comunes: fiebre, tos y cansancio. Usa test si es necesario y evita contacto social.";
+    if (text.includes("horario")) {
+      return "El horario habitual de atención es de lunes a viernes de 8:00 a 20:00.";
     }
 
     if (text.includes("hola")) {
-      return "Hola, soy tu asistente de salud. ¿En qué puedo ayudarte?";
+      return "Hola, ¿en qué puedo ayudarte?";
     }
 
-    // DEFAULT
-    return "No he entendido tu consulta. Intenta describir síntomas o preguntas sobre salud.";
+    return "He recibido tu mensaje. Un agente te responderá próximamente.";
   }
 </script>
 
