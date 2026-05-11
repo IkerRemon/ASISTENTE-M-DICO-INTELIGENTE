@@ -103,44 +103,40 @@
 </div>
 
 <script>
-  function sendMessage() {
-    let input = document.getElementById("input");
+  const input = document.getElementById("input");
+  const chat = document.getElementById("chat");
+
+  input.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  });
+
+  async function sendMessage() {
     let text = input.value.trim();
-    if (text === "") return;
+    if (!text) return;
 
     addMessage(text, "user");
     input.value = "";
 
-    setTimeout(() => {
-      addMessage(getResponse(text), "bot");
-    }, 500);
+    const res = await fetch("http://localhost:3000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: text })
+    });
+
+    const data = await res.json();
+    addMessage(data.reply, "bot");
   }
 
   function addMessage(text, sender) {
-    let chat = document.getElementById("chat");
     let msg = document.createElement("div");
     msg.classList.add("message", sender);
     msg.innerText = text;
     chat.appendChild(msg);
     chat.scrollTop = chat.scrollHeight;
-  }
-
-  function getResponse(text) {
-    text = text.toLowerCase();
-
-    if (text.includes("cita")) {
-      return "Para pedir una cita, accede al sistema de Osakidetza o acude a tu centro de salud.";
-    }
-
-    if (text.includes("horario")) {
-      return "El horario habitual de atención es de lunes a viernes de 8:00 a 20:00.";
-    }
-
-    if (text.includes("hola")) {
-      return "Hola, ¿en qué puedo ayudarte?";
-    }
-
-    return "He recibido tu mensaje. Un agente te responderá próximamente.";
   }
 </script>
 
