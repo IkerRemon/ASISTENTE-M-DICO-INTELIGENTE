@@ -112,23 +112,18 @@
     }
   });
 
-  async function sendMessage() {
+  function sendMessage() {
     let text = input.value.trim();
     if (!text) return;
 
     addMessage(text, "user");
     input.value = "";
 
-    const res = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ message: text })
-    });
+    let response = getBotResponse(text);
 
-    const data = await res.json();
-    addMessage(data.reply, "bot");
+    setTimeout(() => {
+      addMessage(response, "bot");
+    }, 400);
   }
 
   function addMessage(text, sender) {
@@ -137,6 +132,39 @@
     msg.innerText = text;
     chat.appendChild(msg);
     chat.scrollTop = chat.scrollHeight;
+  }
+
+  function getBotResponse(text) {
+    text = text.toLowerCase();
+
+    // REGLAS MÉDICAS (LÓGICA DEL BOT)
+
+    if (text.includes("fiebre")) {
+      return "La fiebre puede indicar infección. Recomendación: reposo, hidratación y consultar si supera 38.5°C.";
+    }
+
+    if (text.includes("dolor cabeza") || text.includes("migraña")) {
+      return "El dolor de cabeza puede deberse a estrés, deshidratación o migraña. Descansa y evita pantallas.";
+    }
+
+    if (text.includes("tos")) {
+      return "La tos puede ser viral o irritativa. Si dura más de 7 días, consulta a un profesional.";
+    }
+
+    if (text.includes("cita")) {
+      return "Puedes pedir cita en tu centro de salud o sistema sanitario correspondiente.";
+    }
+
+    if (text.includes("covid")) {
+      return "Síntomas comunes: fiebre, tos y cansancio. Usa test si es necesario y evita contacto social.";
+    }
+
+    if (text.includes("hola")) {
+      return "Hola, soy tu asistente de salud. ¿En qué puedo ayudarte?";
+    }
+
+    // DEFAULT
+    return "No he entendido tu consulta. Intenta describir síntomas o preguntas sobre salud.";
   }
 </script>
 
